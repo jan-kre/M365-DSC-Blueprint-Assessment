@@ -279,7 +279,6 @@ Configuration Sample_Blueprint
             LimitPresenterRolePermissions          = $False;
             TenantId                               = $OrganizationName;
         }
-
         TeamsMeetingPolicy "TeamsMeetingPolicy-Global"
         {
             AllowAnnotations                           = $True;
