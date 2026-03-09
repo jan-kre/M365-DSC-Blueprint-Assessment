@@ -1,0 +1,434 @@
+# Generated with Microsoft365DSC version 1.25.1015.1
+# For additional information on how to use Microsoft365DSC, please visit https://aka.ms/M365DSC
+param (
+)
+
+Configuration Sample_Blueprint
+{
+    param (
+    )
+
+    $OrganizationName = $ConfigurationData.NonNodeData.OrganizationName
+
+    Import-DscResource -ModuleName 'Microsoft365DSC' -ModuleVersion '1.25.1015.1'
+
+    Node localhost
+    {
+        ODSettings "ODSettings"
+        {
+            ApplicationId                             = $ConfigurationData.NonNodeData.ApplicationId;
+            BlockMacSync                              = $False;
+            CertificateThumbprint                     = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            DisableReportProblemDialog                = $False;
+            DomainGuids                               = @("123e4567-e89b-12d3-a456-426614174000"); ### L2|Wir empfehlen, die Synchronisierung von OneDrive nur in der eigenen Domäne zu erlauben.
+            Ensure                                    = "Present";
+            ExcludedFileExtensions                    = @("exe", "bat"); ### L1|Wir empfehlen, den Upload von bestimmten Dateitypen in OneDrive zu unterbinden.
+            IsSingleInstance                          = "Yes";
+            NotificationsInOneDriveForBusinessEnabled = $True;
+            ODBAccessRequests                         = "Unspecified";
+            ODBMembersCanShare                        = "Unspecified";
+            OneDriveForGuestsEnabled                  = $False;
+            OneDriveStorageQuota                      = 1048576;
+            OrphanedPersonalSitesRetentionPeriod      = 180; ### L3|Wir empfehlen, die Aufbewahrung von OneDrive Sites auf 180 Tage zu erhöhen.
+            TenantId                                  = $OrganizationName;
+            TenantRestrictionEnabled                  = $False;
+        }
+        SPOAccessControlSettings "SPOAccessControlSettings"
+        {
+            ApplicationId                 = $ConfigurationData.NonNodeData.ApplicationId;
+            CertificateThumbprint         = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            ConditionalAccessPolicy       = "AllowLimitedAccess"; ### L2|Wir empfehlen, den Zugriff von nicht-verwalteten Geräten auf Online-Zugriff zu beschränken.
+            DisallowInfectedFileDownload  = $True; ### L1|Wir empfehlen, den Download von infizierten Dateien zu verhindern.
+            DisplayStartASiteOption       = $False; ### L2|Wir empfehlen, die Anlage von neuen Sites durch Nutzer zu beschränken.
+            EmailAttestationReAuthDays    = 30;
+            EmailAttestationRequired      = $False;
+            EnableRestrictedAccessControl = $False;
+            Ensure                        = "Present";
+            ExternalServicesEnabled       = $True;
+            IPAddressAllowList            = "";
+            IPAddressEnforcement          = $False;
+            IPAddressWACTokenLifetime     = 15;
+            IsSingleInstance              = "Yes";
+            TenantId                      = $OrganizationName;
+        }
+        SPOSharingSettings "SPOSharingSettings"
+        {
+            ApplicationId                            = $ConfigurationData.NonNodeData.ApplicationId;
+            BccExternalSharingInvitations            = $False;
+            CertificateThumbprint                    = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            DefaultLinkPermission                    = "View"; ### L2|Wir empfehlen, die Standard-Berechtigung für freigegebene Links auf "View" zu setzen.
+            DefaultSharingLinkType                   = "Direct"; ### L1|Wir empfehlen, die Standard-Berechtigung für freigegebene Links auf "Bestimmte Personen" zu setzen.
+            EnableGuestSignInAcceleration            = $False;
+            Ensure                                   = "Present";
+            ExternalUserExpirationRequired           = $True; ### L2|Wir empfehlen, den Gast-Zugriff auf Sites zeitlich zu begrenzen.
+            ExternalUserExpireInDays                 = 90; ### L2|Wir empfehlen, die zeitliche Begrenzung für den Gastzugriff auf 90 Tage zu setzen.
+            FileAnonymousLinkType                    = "Edit";
+            FolderAnonymousLinkType                  = "Edit";
+            IsSingleInstance                         = "Yes";
+            MySiteSharingCapability                  = "Disabled"; ### L1|Wir empfehlen, die Freigabe von OneDrive nur innerhalb der Organisation zu erlauben.
+            NotifyOwnersWhenItemsReshared            = $True;
+            PreventExternalUsersFromResharing        = $True; ### L2|Wir empfehlen, das Teilen von Elementen durch Gäste zu verhindern.
+            ProvisionSharedWithEveryoneFolder        = $False;
+            SharingCapability                        = "ExistingExternalUserSharingOnly"; ### L1|Wir empfehlen, die Freigabe von SharePoint nur mit bestehenden Gästen zu erlauben.
+            SharingDomainRestrictionMode             = "None";
+            ShowAllUsersClaim                        = $False;
+            ShowEveryoneClaim                        = $False;
+            ShowEveryoneExceptExternalUsersClaim     = $True;
+            ShowPeoplePickerSuggestionsForGuestUsers = $False;
+            TenantId                                 = $OrganizationName;
+        }
+        SPOTenantSettings "SPOTenantSettings"
+        {
+            ApplicationId                                          = $ConfigurationData.NonNodeData.ApplicationId;
+            ApplyAppEnforcedRestrictionsToAdHocRecipients          = $True;
+            CertificateThumbprint                                  = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            CommentsOnSitePagesDisabled                            = $False;
+            EnableAzureADB2BIntegration                            = $True;
+            Ensure                                                 = "Present";
+            ExemptNativeUsersFromTenantLevelRestricedAccessControl = $False;
+            FilePickerExternalImageSearchEnabled                   = $True;
+            HideDefaultThemes                                      = $False;
+            IsSingleInstance                                       = "Yes";
+            LegacyAuthProtocolsEnabled                             = $False; ### L1|Wir empfehlen, die Anmeldung von Anwendungen zu verhindern, die keine Modern Authentication unterstützen.
+            MarkNewFilesSensitiveByDefault                         = "AllowExternalSharing";
+            MaxCompatibilityLevel                                  = "15";
+            MinCompatibilityLevel                                  = "15";
+            NotificationsInSharePointEnabled                       = $True;
+            OfficeClientADALDisabled                               = $False;
+            OwnerAnonymousNotification                             = $True;
+            PublicCdnAllowedFileTypes                              = "CSS,EOT,GIF,ICO,JPEG,JPG,JS,MAP,PNG,SVG,TTF,WOFF";
+            PublicCdnEnabled                                       = $False;
+            SearchResolveExactEmailOrUPN                           = $False;
+            SignInAccelerationDomain                               = "";
+            SocialBarOnSitePagesDisabled                           = $False;
+            TenantDefaultTimezone                                  = "(UTC+01:00) Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna"; ### L3|Wir empfehlen, die Standard-Zeitzone auf die lokale Zeitzone zu setzen.
+            TenantId                                               = $OrganizationName;
+            UseFindPeopleInPeoplePicker                            = $False;
+            UsePersistentCookiesForExplorerView                    = $False;
+        }
+        TeamsAIPolicy "TeamsAIPolicy-Global"
+        {
+            EnrollFace                = "Disabled"; ### L2|Wir empfehlen, die Erstellung von Gesichts-Profilen zu unterbinden.
+            EnrollVoice               = "Disabled"; ### L2|Wir empfehlen, die Erstellung von Sprach-Profilen zu unterbinden.
+            Ensure                    = "Present";
+            Identity                  = "Global";
+            SpeakerAttributionForBYOD = "Enabled";
+            TenantId                  = $OrganizationName;
+        }
+        TeamsCallingPolicy "TeamsCallingPolicy-Global"
+        {
+            AIInterpreter                        = "Enabled";
+            AllowCallForwardingToPhone           = $True; ### L2|Wir empfehlen, die Weiterleitung an externe Nummern nur in begründeten Fällen zuzulassen.
+            AllowCallForwardingToUser            = $True; ### L3|Wir empfehlen, die Weiterleitung an andere Nutzer zuzulassen.
+            AllowCallGroups                      = $True; ### L3|Wir empfehlen, die Erstellung von Anrufgruppen zuzulassen.
+            AllowCallRedirect                    = "Disabled";
+            AllowCloudRecordingForCalls          = $False; ### L1|Wir empfehlen, die Aufzeichnung von privaten Anrufen nicht zuzulassen.
+            AllowDelegation                      = $True; ### L3|Wir empfehlen, die Einrichtung von Stellvertretern zuzulassen.
+            AllowPrivateCalling                  = $True; ### L3|Wir empfehlen, das Tätigen von Anrufen in Teams zuzulassen.
+            AllowSIPDevicesCalling               = $False;
+            AllowTranscriptionForCalling         = $False; ### L2|Wir empfehlen, die Transcription bei privaten Anrufen nur bei einem berechtigten Use Case (z.B. Nutzung von Copilot) zu erlauben.
+            AllowVoicemail                       = "UserOverride"; ### L3|Wir empfehlen, die Einrichtung einer Voicemail dem Nutzer zu überlassen.
+            AllowWebPSTNCalling                  = $True;
+            ApplicationId                        = $ConfigurationData.NonNodeData.ApplicationId;
+            AutoAnswerEnabledType                = "Disabled";
+            BusyOnBusyEnabledType                = "UserOverride"; ### L3|Wir empfehlen, die Entscheidung für das "Besetzt"-Verhalten dem Nutzer zu überlassen.
+            CallRecordingExpirationDays          = 60;
+            CertificateThumbprint                = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            Copilot                              = "Enabled";
+            EnableSpendLimits                    = $False;
+            EnableWebPstnMediaBypass             = $False;
+            Ensure                               = "Present";
+            ExplicitRecordingConsent             = "Disabled";
+            Identity                             = "Global";
+            InboundFederatedCallRoutingTreatment = "RegularIncoming";
+            InboundPstnCallRoutingTreatment      = "RegularIncoming";
+            LiveCaptionsEnabledTypeForCalling    = "DisabledUserOverride";
+            MusicOnHoldEnabledType               = "Enabled";
+            PopoutForIncomingPstnCalls           = "Disabled";
+            PreventTollBypass                    = $False;
+            RealTimeText                         = "Enabled";
+            ShowTeamsCallsInCallLog              = $True;
+            SpamFilteringEnabledType             = "Enabled";
+            TenantId                             = $OrganizationName;
+            VoiceSimulationInInterpreter         = "Enabled";
+        }
+        TeamsCallParkPolicy "TeamsCallParkPolicy-Global"
+        {
+            AllowCallPark         = $False; ### L3|Wir empfehlen, kein Parken von Anrufen zuzulassen. Stattdessen sollte die Funktion "Transfer" genutzt werden.
+            ApplicationId         = $ConfigurationData.NonNodeData.ApplicationId;
+            CertificateThumbprint = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            Ensure                = "Present";
+            Identity              = "Global";
+            ParkTimeoutSeconds    = 300;
+            PickupRangeEnd        = 99;
+            PickupRangeStart      = 10;
+            TenantId              = $OrganizationName;
+        }
+        TeamsClientConfiguration "TeamsClientConfiguration-Global"
+        {
+            AllowBox                         = $False; ### L1|Wir empfehlen, die Nutzung von 3rd Party Speicherdiensten in Teams zu unterbinden.
+            AllowDropBox                     = $False; ### L1|Wir empfehlen, die Nutzung von 3rd Party Speicherdiensten in Teams zu unterbinden.
+            AllowEgnyte                      = $False; ### L1|Wir empfehlen, die Nutzung von 3rd Party Speicherdiensten in Teams zu unterbinden.
+            AllowEmailIntoChannel            = $False; ### L1|Wir empfehlen, die Email-Integration zu deaktivieren.
+            AllowGoogleDrive                 = $False; ### L1|Wir empfehlen, die Nutzung von 3rd Party Speicherdiensten in Teams zu unterbinden.
+            AllowGuestUser                   = $True;
+            AllowOrganizationTab             = $True; ### L3|Wir empfehlen, die Nutzung des Organization Tabs zu erlauben, sofern die Manager-Struktur im AD gepflegt ist.
+            AllowResourceAccountSendMessage  = $True;
+            AllowRoleBasedChatPermissions    = $False;
+            AllowScopedPeopleSearchandAccess = $False; ### L2|Wir empfehlen, die Teams-Suche an die Globale Addressliste (GAL) anzupassen.
+            AllowShareFile                   = $False; ### L1|Wir empfehlen, die Nutzung von 3rd Party Speicherdiensten in Teams zu unterbinden.
+            AllowSkypeBusinessInterop        = $True;
+            ApplicationId                    = $ConfigurationData.NonNodeData.ApplicationId;
+            CertificateThumbprint            = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            ContentPin                       = "RequiredOutsideScheduleMeeting";
+            Identity                         = "Global";
+            ResourceAccountContentAccess     = "NoAccess";
+            TenantId                         = $OrganizationName;
+        }
+        TeamsEnhancedEncryptionPolicy "TeamsEnhancedEncryptionPolicy-Global"
+        {
+            ApplicationId                        = $ConfigurationData.NonNodeData.ApplicationId;
+            CallingEndtoEndEncryptionEnabledType = "DisabledUserOverride"; ### L1|Wir empfehlen, die Nutzung von Ende-zu-Ende Verschlüsselung zu ermöglichen.
+            CertificateThumbprint                = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            Ensure                               = "Present";
+            Identity                             = "Global";
+            MeetingEndToEndEncryption            = "DisabledUserOverride"; ### L1|Wir empfehlen, die Nutzung von Ende-zu-Ende Verschlüsselung zu ermöglichen.
+            TenantId                             = $OrganizationName;
+        }
+        TeamsEventsPolicy "TeamsEventsPolicy-Global"
+        {
+            AllowedQuestionTypesInRegistrationForm  = "AllQuestions";
+            AllowedTownhallTypesForRecordingPublish = "Everyone";
+            AllowedWebinarTypesForRecordingPublish  = "Everyone";
+            AllowEmailEditing                       = "Enabled";
+            AllowEventIntegrations                  = $True;
+            AllowTownhalls                          = "Disabled"; ### L2|Wir empfehlen, die Erstellung von Town Halls in der Global Policy zu deaktivieren und stattdessen separate Policies für berechtigte Mitarbeiter zu erstellen.
+            AllowWebinars                           = "Disabled"; ### L2|Wir empfehlen, die Erstellung von Webinaren in der Global Policy zu deaktivieren und stattdessen separate Policies für berechtigte Mitarbeiter zu erstellen.
+            ApplicationId                           = $ConfigurationData.NonNodeData.ApplicationId;
+            BroadcastPremiumApps                    = "Enabled";
+            CertificateThumbprint                   = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            Description                             = "Default policy";
+            Ensure                                  = "Present";
+            EventAccessType                         = "Everyone";
+            Identity                                = "Global";
+            ImmersiveEvents                         = "Enabled";
+            RecordingForTownhall                    = "Enabled";
+            RecordingForWebinar                     = "Enabled";
+            TenantId                                = $OrganizationName;
+            TownhallChatExperience                  = "Optimized";
+            TownhallEventAttendeeAccess             = "Everyone";
+            TranscriptionForTownhall                = "Enabled";
+            TranscriptionForWebinar                 = "Enabled";
+            UseMicrosoftECDN                        = $True;
+        }
+        TeamsFederationConfiguration "TeamsFederationConfiguration-Global"
+        {
+            AllowedDomains                              = @("Whitelist"); ### L2|Wir empfehlen, die Kommunikation nur mit Tenants zu erlauben, die per Whitelist freigeschaltet sind.
+            AllowFederatedUsers                         = $True;
+            AllowTeamsConsumer                          = $False; ### L2|Wir empfehlen, die Kommunikation mit privaten Teams-Konten zu unterbinden.
+            AllowTeamsConsumerInbound                   = $False; ### L2|Wir empfehlen, die eingehende Kommunikation von privaten Teams-Konten zu unterbinden.
+            ApplicationId                               = $ConfigurationData.NonNodeData.ApplicationId;
+            BlockedDomains                              = @();
+            CertificateThumbprint                       = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            DomainBlockingForMDOAdminsInTeams           = "Disabled";
+            ExternalAccessWithTrialTenants              = "Blocked"; ### L1|Wir empfehlen, die Kommunkation mit Trial-Tenants zu unterbinden.
+            Identity                                    = "Global";
+            RestrictTeamsConsumerToExternalUserProfiles = $False;
+            SharedSipAddressSpace                       = $False;
+            TenantId                                    = $OrganizationName;
+            TreatDiscoveredPartnersAsUnverified         = $False;
+        }
+        TeamsFeedbackPolicy "TeamsFeedbackPolicy-Global"
+        {
+            AllowEmailCollection      = $False; ### L3|Wir empfehlen, die Feeback-Funktionen zu deaktivieren.
+            AllowLogCollection        = $False; ### L3|Wir empfehlen, die Feeback-Funktionen zu deaktivieren.
+            AllowScreenshotCollection = $False; ### L3|Wir empfehlen, die Feeback-Funktionen zu deaktivieren.
+            Ensure                    = "Present";
+            Identity                  = "Global";
+            ReceiveSurveysMode        = "Disabled"; ### L3|Wir empfehlen, die Feeback-Funktionen zu deaktivieren.
+            TenantId                  = $OrganizationName;
+            UserInitiatedMode         = "Disabled"; ### L3|Wir empfehlen, die Feeback-Funktionen zu deaktivieren.
+        }
+        TeamsFilesPolicy "TeamsFilesPolicy-Global"
+        {
+            Ensure                              = "Present";
+            FileSharingInChatswithExternalUsers = "Disabled"; ### L2|Wir empfehlen, das Teilen von Dateien in externen Chats zu verhindern.
+            Identity                            = "Global";
+            NativeFileEntryPoints               = "Enabled";
+            SPChannelFilesTab                   = "Enabled";
+            TenantId                            = $OrganizationName;
+        }
+        TeamsMeetingConfiguration "TeamsMeetingConfiguration-Global"
+        {
+            ApplicationId                          = $ConfigurationData.NonNodeData.ApplicationId;
+            CertificateThumbprint                  = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            ClientAppSharingPort                   = 50040;
+            ClientAppSharingPortRange              = 20;
+            ClientAudioPort                        = 50000;
+            ClientAudioPortRange                   = 20;
+            ClientMediaPortRangeEnabled            = $True;
+            ClientVideoPort                        = 50020;
+            ClientVideoPortRange                   = 20;
+            CustomFooterText                       = "";
+            DisableAnonymousJoin                   = $False;
+            DisableAppInteractionForAnonymousUsers = $False;
+            EnableQoS                              = $True; ### L3|Wir empfehlen, Quality of Service im internen Netzwerk zu implementieren.
+            FeedbackSurveyForAnonymousUsers        = "Enabled";
+            Identity                               = "Global";
+            LegalURL                               = "Link zu Datenschutzhinweisen"; ### L3|Wir empfehlen, einen Link zu Datenschutzhinweisen in der E-Mail-Einladung zu ergänzen.
+            LimitPresenterRolePermissions          = $False;
+            TenantId                               = $OrganizationName;
+        }
+
+        TeamsMeetingPolicy "TeamsMeetingPolicy-Global"
+        {
+            AllowAnnotations                           = $True;
+            AllowAnonymousUsersToDialOut               = $False; ### L2|Wir empfehlen, die Dial Out Funktion für anonyme Nutzer zu deaktivieren.
+            AllowAnonymousUsersToJoinMeeting           = $True;
+            AllowAnonymousUsersToStartMeeting          = $False; ### L2|Wir empfehlen, anonymen Nutzer nicht das Starten von Meeting zu gestatten.
+            AllowBreakoutRooms                         = $True;
+            AllowCartCaptionsScheduling                = "DisabledUserOverride";
+            AllowChannelMeetingScheduling              = $True;
+            AllowCloudRecording                        = $False; ### L1|Wir empfehlen, die Aufzeichnung von Meetings in der Global Policy zu unterbinden. Die Aufzeichnung sollte per separater Policy nur an berechtigte Mitarbeiter vergeben werden.
+            AllowDocumentCollaboration                 = "Enabled";
+            AllowEngagementReport                      = "Disabled"; ### L2|Wir empfehlen, den Engagement Report aus Datenschutzgründen zu deaktivieren.
+            AllowExternalNonTrustedMeetingChat         = $True;
+            AllowExternalParticipantGiveRequestControl = $False; ### L1|Wir empfehlen, die Übergabe der Steuerung nicht an externe Teilnehmer zuzulassen.
+            AllowIPAudio                               = $True;
+            AllowIPVideo                               = $True;
+            AllowMeetingCoach                          = $True;
+            AllowMeetingReactions                      = $True;
+            AllowMeetingRegistration                   = $True;
+            AllowMeetNow                               = $True;
+            AllowNDIStreaming                          = $False;
+            AllowNetworkConfigurationSettingsLookup    = $False;
+            AllowOrganizersToOverrideLobbySettings     = $False;
+            AllowOutlookAddIn                          = $True;
+            AllowParticipantGiveRequestControl         = $True;
+            AllowPowerPointSharing                     = $True;
+            AllowPrivateMeetingScheduling              = $True;
+            AllowPrivateMeetNow                        = $True;
+            AllowPSTNUsersToBypassLobby                = $False;
+            AllowRecordingStorageOutsideRegion         = $False;
+            AllowSharedNotes                           = $True;
+            AllowTranscription                         = $False; ### L2|Wir empfehlen, die Nutzung von Transcription in Meetings zu unterbinden, sofern kein Use Case (z.B. Nutzung von Copilot) vorliegt.
+            AllowWatermarkForCameraVideo               = $True;
+            AllowWatermarkForScreenSharing             = $True;
+            AllowWhiteboard                            = $True; ### L3|Wir empfehlen, die Nutzung von Whiteboards in Meetings zu ermöglichen.
+            ApplicationId                              = $ConfigurationData.NonNodeData.ApplicationId;
+            AttendeeIdentityMasking                    = "DisabledUserOverride";
+            AutoAdmittedUsers                          = "EveryoneInCompanyExcludingGuests"; ### L2|Wir empfehlen, das Umgehen der Lobby nur für Member der eigenen Organisation zuzulassen.
+            AutomaticallyStartCopilot                  = "Disabled";
+            AutoRecording                              = "Enabled";
+            CaptchaVerificationForMeetingJoin          = "NotRequired";
+            CertificateThumbprint                      = $ConfigurationData.NonNodeData.CertificateThumbprint;
+            ChannelRecordingDownload                   = "Allow";
+            ConnectToMeetingControls                   = "Enabled";
+            ContentSharingInExternalMeetings           = "EnabledForAnyone";
+            Copilot                                    = "EnabledWithTranscript";
+            CopyRestriction                            = $True;
+            Description                                = "ACMS auto updated Global";
+            DesignatedPresenterRoleMode                = "EveryoneUserOverride";
+            DetectSensitiveContentDuringScreenSharing  = $True;
+            EnrollUserOverride                         = "Disabled";
+            Ensure                                     = "Present";
+            ExplicitRecordingConsent                   = "Enabled"; ### L1|Wir empfehlen, die explizite Zustimmung für Meeting-Aufzeichnungen zu nutzen, sofern die Aufzeichnung erlaubt ist.
+            ExternalMeetingJoin                        = "EnabledForAnyone";
+            Identity                                   = "Global";
+            InfoShownInReportMode                      = "FullInformation";
+            IPAudioMode                                = "EnabledOutgoingIncoming";
+            IPVideoMode                                = "EnabledOutgoingIncoming";
+            LiveCaptionsEnabledType                    = "DisabledUserOverride";
+            LiveInterpretationEnabledType              = "DisabledUserOverride";
+            LiveStreamingMode                          = "Disabled";
+            MediaBitRateKb                             = 50000;
+            MeetingChatEnabledType                     = "Enabled";
+            NewMeetingRecordingExpirationDays          = 120;
+            ParticipantNameChange                      = "Disabled"; ### L2|Wir empfehlen, die Änderung des eignenen Namens in Meetings zu unterbinden.
+            PreferredMeetingProviderForIslandsMode     = "TeamsAndSfb";
+            QnAEngagementMode                          = "Enabled";
+            RoomAttributeUserOverride                  = "Off";
+            RoomPeopleNameUserOverride                 = "Off";
+            ScreenSharingMode                          = "EntireScreen";
+            SpeakerAttributionMode                     = "EnabledUserOverride";
+            StreamingAttendeeMode                      = "Disabled";
+            TeamsCameraFarEndPTZMode                   = "Disabled";
+            TenantId                                   = $OrganizationName;
+            VideoFiltersMode                           = "AllFilters";
+            VoiceIsolation                             = "Enabled";
+            WhoCanRegister                             = "Everyone";
+        }
+        TeamsMessagingConfiguration "TeamsMessagingConfiguration"
+        {
+            ContentBasedPhishingCheck         = "Disabled";
+            CustomEmojis                      = $False; ### L2|Wir empfehlen, den Upload von Custom Emojis zu unterbinden.
+            EnableInOrganizationChatControl   = $False;
+            EnableVideoMessageCaptions        = $True;
+            FileTypeCheck                     = "Disabled";
+            IsSingleInstance                  = "Yes";
+            MessagingNotes                    = "Enabled";
+            ReportIncorrectSecurityDetections = "Enabled";
+            Storyline                         = "Enabled";
+            TenantId                          = $OrganizationName;
+            UrlReputationCheck                = "Disabled";
+        }
+        TeamsMessagingPolicy "TeamsMessagingPolicy-Global"
+        {
+            AllowChatWithGroup                            = $True;
+            AllowCommunicationComplianceEndUserReporting  = $True;
+            AllowCustomGroupChatAvatars                   = $True;
+            AllowFluidCollaborate                         = $False;
+            AllowFullChatPermissionUserToDeleteAnyMessage = $False;
+            AllowGiphy                                    = $True; ### L3|Wir empfehlen, GIFs zu deaktivieren.
+            AllowGiphyDisplay                             = $True;
+            AllowGroupChatJoinLinks                       = $True;
+            AllowImmersiveReader                          = $True;
+            AllowMemes                                    = $True;
+            AllowOwnerDeleteMessage                       = $False;
+            AllowPasteInternetImage                       = $True;
+            AllowPriorityMessages                         = $True;
+            AllowRemoveUser                               = $True;
+            AllowSecurityEndUserReporting                 = $True;
+            AllowSmartCompose                             = $True;
+            AllowSmartReply                               = $True;
+            AllowStickers                                 = $True;
+            AllowUrlPreviews                              = $True;
+            AllowUserChat                                 = $True;
+            AllowUserDeleteChat                           = $True; ### L3|Wir empfehlen, das Löschen von Chats zuzulassen.
+            AllowUserDeleteMessage                        = $True; ### L3|Wir empfehlen, das Löschen von Nachrichten zuzulassen.
+            AllowUserEditMessage                          = $True; ### L3|Wir empfehlen, das Bearbeiten von Nachrichten zuzulassen.
+            AllowUserTranslation                          = $True;
+            AllowVideoMessages                            = $True;
+            AudioMessageEnabledType                       = "ChatsAndChannels";
+            AutoShareFilesInExternalChats                 = "Enabled";
+            ChannelsInChatListEnabledType                 = "DisabledUserOverride";
+            ChatPermissionRole                            = "Restricted";
+            CreateCustomEmojis                            = $False; ### L2|Wir empfehlen, das Erstellen von Custom Emojis zu unterbinden.
+            DeleteCustomEmojis                            = $False;
+            DesignerForBackgroundsAndImages               = "Enabled";
+            Ensure                                        = "Present";
+            GiphyRatingType                               = "Moderate";
+            Identity                                      = "Global";
+            InOrganizationChatControl                     = "BlockingDisallowed";
+            ReadReceiptsEnabledType                       = "UserPreference";
+            TenantId                                      = $OrganizationName;
+            UseB2BInvitesToAddExternalUsers               = $True;
+            UsersCanDeleteBotMessages                     = $False;
+        }
+        TeamsOnlineVoicemailPolicy "TeamsOnlineVoicemailPolicy-Global"
+        {
+            EnableEditingCallAnswerRulesSetting = $True;
+            EnableTranscription                 = $True;
+            EnableTranscriptionProfanityMasking = $False;
+            EnableTranscriptionTranslation      = $True;
+            Ensure                              = "Present";
+            Identity                            = "Global";
+            MaximumRecordingLength              = "00:05:00";
+            PreamblePostambleMandatory          = $False;
+            ShareData                           = "Defer";
+            TenantId                            = $OrganizationName;
+        }
+    }
+}
+
+Sample_Blueprint -ConfigurationData .\ConfigurationData.psd1
